@@ -9,4 +9,9 @@ export default createAppContainer(createStackNavigator({
     Preload,
     Login,
     // HomeStack
+}, {
+    initialRouteName:'Preload',
+    defaultNavigationOptions:{
+        header: null
+    }
 }));
