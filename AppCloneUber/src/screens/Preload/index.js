@@ -1,7 +1,7 @@
 import { StackActions, NavigationActions } from 'react-navigation';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 
-const Preaload = (props) => {
+const Preload = (props) => {
     //Login
     if(!props.token) {
         props.navigation.dispatch(StackActions.reset({
@@ -15,7 +15,7 @@ const Preaload = (props) => {
         props.navigation.dispatch(StackActions.reset({
             index:0,
             actions:[
-                NavigationActions.navigate({routeName:'HomeStack'})
+                NavigationActions.navigate({routeName:'Login'})
             ]
         }));
     }
@@ -28,4 +28,5 @@ const mapStateToProps = (state) => {
         token:state.userReducer.token
     };
 }
-export default connect(mapStateToProps)(Preaload);
+
+export default connect(mapStateToProps)(Preload);
