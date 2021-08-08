@@ -7,7 +7,7 @@ flex: 1;
 
 export const Header = styled.SafeAreaView`
 height: 80px;
-background-color: #3574cb;
+background-color: #014;
 justify-content: center;
 `;
 
@@ -18,7 +18,7 @@ margin-left: 20px;
 `;
 
 export const Menu = styled.View`
-background-color: #3574cb;
+background-color: #014;
 flex-direction: row;
 padding-left: 20px;
 margin-bottom: 20px;
@@ -27,7 +27,7 @@ margin-bottom: 20px;
 export const MenuItem = styled.TouchableHighlight`
 padding: 20px;
 border-bottom-width: 5px;
-border-bottom-color: ${props=>props.active?'#fff':'#3574cb'};
+border-bottom-color: ${props=>props.active?'#fff':'#014'};
 `;
 
 export const MenuItemText = styled.Text`
@@ -45,7 +45,7 @@ color: #333;
 `;
 
 export const ActionButton = styled.TouchableHighlight`
-background-color: #3574cb;
+background-color: #014;
 justify-content: center;
 align-items: center;
 height: 50px;

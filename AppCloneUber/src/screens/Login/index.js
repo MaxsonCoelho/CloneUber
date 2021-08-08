@@ -61,7 +61,7 @@ const Login = (props) => {
 
     return (
         <S.Container behavior={Platform.OS == 'ios'?'padding':null}>
-            <StatusBar barStyle="light-content" backgroundColor="#3574cb" />
+            <StatusBar barStyle="light-content" backgroundColor="#000" />
             <S.Header>
                 <S.HeaderTitle>Uber</S.HeaderTitle>
             </S.Header>
