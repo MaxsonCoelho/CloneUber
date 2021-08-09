@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { StackActions, NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
 import { StatusBar, Platform, ScrollView, Text, ActivityIndicator } from 'react-native';
 import useDevsUberApi from '../../hooks/useDevsUberApi';
 import * as S from './styled';
 
 const Login = (props) => {
+    const navigation = useNavigation();
     const api = useDevsUberApi();
 
     const [activeMenu, setActiveMenu] = useState('Login');
@@ -24,12 +25,7 @@ const Login = (props) => {
                     alert(error);
                 } else {
                     props.setToken(res.token);
-                    props.navigation.dispatch(StackActions.reset({
-                        index:0,
-                        actions:[
-                            NavigationActions.navigate({routeName:'HomeStack'})
-                        ]
-                    }));
+                    navigation.navigate('Home')
                 }
             })
             .catch(e => console.log(e));
@@ -46,12 +42,7 @@ const Login = (props) => {
                     alert(error);
                 } else {
                     props.setToken(res.token);
-                    props.navigation.dispatch(StackActions.reset({
-                        index:0,
-                        actions:[
-                            NavigationActions.navigate({routeName:'HomeStack'})
-                        ]
-                    }));
+                    navigation.navigate('Home')
                 }
             })
             .catch(e => console.log(e));
