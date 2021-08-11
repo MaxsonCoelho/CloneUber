@@ -11,46 +11,57 @@ const Home = () => {
 
     const [fromLoc, setFromLoc] = useState({});
     const [toLoc, setToLoc] = useState({});
-    const [mapLoc, setMapLoc] = useState({
-        center:{
-            latitude:37.78825,
-            longitude:-122.4324
-        },
-        zoom:16,
-        pitch:0,
-        altitude:0,
-        heading:0
-    });
+    const [mapLoc, setMapLoc] = useState(null);
+    
+
+    const handleFromClick = () => {
+
+    }
+
+    const handleToClick = async() => {
+        const geo = await Geocoder.from('Goodwill Store');
+        if(geo.results.length > 0) {
+            const loc = {
+                name:geo.results[0].formatted_address,
+                center:{
+                    latitude:geo.results[0].geometry.location.lat,
+                    longitude:geo.results[0].geometry.location.lng,
+                },
+                zoom:16,
+                pitch:0,
+                altitude:0,
+                heading:0
+            };
+            
+            setToLoc(loc);
+        }
+    }
 
     useEffect(()=> {
         //inicia o geocoder
         Geocoder.init(MapsAPI, {language:'pt-br'});
+
+        const getMyCurrentPosition = () => {
+            Geolocation.getCurrentPosition(
+                async position => {
+                  
+                  let latitude = await position.coords.latitude;
+                  let longitude = await position.coords.longitude;
+
+                  setMapLoc({
+                      latitude: latitude,
+                      longitude: longitude,
+                      latitudeDelta:0.0922,
+                      longitudeDelta:0.0421
+                  });
+                },
+                error => Alert.alert('Error', JSON.stringify(error)),
+                {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+              );
+            
+        }
         getMyCurrentPosition();
     }, [])
-
-    const getMyCurrentPosition = () => {
-        Geolocation.getCurrentPosition(async (info)=> {
-            const geo = await Geocoder.from(info.coords.latitude, info.coords.longitude);
-            if(geo.results.length > 0) {
-                const loc = {
-                    name:geo.results[0].formatted_address,
-                    center:{
-                        latitude:info.coords.latitude,
-                        longitude:info.coords.longitude
-                    },
-                    zoom:16,
-                    pitch:0,
-                    altitude:0,
-                    heading:0
-                }
-
-                setMapLoc(loc);//localização atual
-                setFromLoc(loc);//localização inicial de corrida
-            }
-        }, (e)=> {
-
-        });
-    }
 
     return (
         <S.Container>
@@ -59,25 +70,50 @@ const Home = () => {
                 ref={map}
                 style={{flex:1}}
                 provider="google"
-                camera={mapLoc}
-            ></MapView>
+                minZoomLevel={16}
+                region={mapLoc}
+            >
+
+                {fromLoc.center &&
+                    <MapView.Marker pinColor="black" coordinate={fromLoc.center} />
+                }
+
+                {toLoc.center &&
+                    <MapView.Marker pinColor="black" coordinate={toLoc.center} />
+                }
+
+            </MapView>
             <S.IntineraryArea>
-                <S.IntineraryItem>
+                <S.IntineraryItem onPress={handleFromClick} underlayColor="#EEE">
                     <>
                         <S.IntineraryLabel>
-                            <S.IntineraryPoint />
+                            <S.IntineraryPoint color="#0000ff"/>
                             <S.IntineraryTitle>Origem</S.IntineraryTitle>
                         </S.IntineraryLabel>
-                        <S.IntineraryValue>...</S.IntineraryValue>
+
+                        {fromLoc.name &&
+                            <S.IntineraryValue>{fromLoc.name}</S.IntineraryValue>
+                        }
+                        {!fromLoc.name &&
+                            <S.IntineraryPlaceHolder>Escolha um local de origem</S.IntineraryPlaceHolder>
+                        }
+                        
                     </>
                 </S.IntineraryItem>
-                <S.IntineraryItem>
+                <S.IntineraryItem onPress={handleToClick} underlayColor="#EEE">
                     <>
                         <S.IntineraryLabel>
-                            <S.IntineraryPoint />
+                            <S.IntineraryPoint color="#00ff00"/>
                             <S.IntineraryTitle>Destino</S.IntineraryTitle>
                         </S.IntineraryLabel>
-                        <S.IntineraryValue>...</S.IntineraryValue>
+
+                        {toLoc.name &&
+                            <S.IntineraryValue>{toLoc.name}</S.IntineraryValue>
+                        }
+                        {!toLoc.name &&
+                            <S.IntineraryPlaceHolder>Escolha um local de origem</S.IntineraryPlaceHolder>
+                        }
+
                     </>
                 </S.IntineraryItem>
             </S.IntineraryArea>
