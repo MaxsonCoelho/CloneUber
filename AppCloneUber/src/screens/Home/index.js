@@ -45,15 +45,24 @@ const Home = () => {
             Geolocation.getCurrentPosition(
                 async position => {
                   
-                  let latitude = await position.coords.latitude;
-                  let longitude = await position.coords.longitude;
+                  const geo = await Geocoder.from(position.coords.latitude, position.coords.longitude);
 
-                  setMapLoc({
-                      latitude: latitude,
-                      longitude: longitude,
-                      latitudeDelta:0.0922,
-                      longitudeDelta:0.0421
-                  });
+                  if(geo.results.length > 0) {
+                      const loc = {
+                          name:geo.results[0].formatted_address,
+                          center:{
+                              latitude:position.coords.latitude,
+                              longitude:position.coords.longitude
+                          },
+                          zoom:16,
+                          pitch:0,
+                          altitude:0,
+                          heading:0
+                      };
+                      setMapLoc(loc);
+                      setFromLoc(loc);
+                  }
+                  
                 },
                 error => Alert.alert('Error', JSON.stringify(error)),
                 {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
@@ -61,6 +70,7 @@ const Home = () => {
             
         }
         getMyCurrentPosition();
+        console.log(fromLoc.name)
     }, [])
 
     return (
@@ -71,7 +81,7 @@ const Home = () => {
                 style={{flex:1}}
                 provider="google"
                 minZoomLevel={16}
-                region={mapLoc}
+                camera={mapLoc}
             >
 
                 {fromLoc.center &&
