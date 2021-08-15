@@ -51,12 +51,25 @@ font-size: 16px;
 text-align: center;
 `;
 
+export const RequestDetails = styled.View`
+flex-direction:row;
+`;
 
+export const RequestDetail = styled.View`
+flex:1;
+align-items:center;
+`;
 
+export const RequestTitle = styled.Text`
+color:#999;
+font-weight:bold;
+font-size: 15;
+`;
 
-
-
-
+export const RequestValue = styled.Text`
+color:#000;
+font-size: 17;
+`;
 
 
 
