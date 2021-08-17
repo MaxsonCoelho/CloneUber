@@ -8,7 +8,7 @@ export const IntineraryArea = styled.View`
 position: absolute;
 left: 10px;
 right: 10px;
-top: 50px;
+top: 10px;
 background-color: #fff;
 border-radius: 5px;
 box-shadow: 0px 0px 4px #999;
@@ -63,14 +63,33 @@ align-items:center;
 export const RequestTitle = styled.Text`
 color:#999;
 font-weight:bold;
-font-size: 15;
+font-size: 15px;
 `;
 
 export const RequestValue = styled.Text`
 color:#000;
-font-size: 17;
+font-size: 17px;
+`;
+
+export const RequestButtons = styled.View`
+flex-direction: row;
+`;
+
+export const RequestButton = styled.TouchableHighlight`
+flex: 1;
+height: 40px;
+justify-content: center;
+align-items: center;
+border-radius: 5px;
+background-color: ${props=>props.color};
+margin: 10px 5px;
 `;
 
 
+export const RequestButtonText = styled.Text`
+font-size: 15px;
+color: #000;
+font-weight: bold;
+`;
 
 

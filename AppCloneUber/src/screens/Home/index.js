@@ -15,6 +15,7 @@ const Home = () => {
     const [fromLoc, setFromLoc] = useState({});
     const [toLoc, setToLoc] = useState({});
     const [mapLoc, setMapLoc] = useState(null);
+    const [minZoom, setMinZoom] = useState(16);
     const [showDirections, setShowDirections] = useState(false);
     const [requestDistance, setRequestDistance] = useState(0);
     const [requestTime, setRequestTime] = useState(0);
@@ -25,6 +26,7 @@ const Home = () => {
 
     }
 
+    //pega o ponto de destino
     const handleToClick = async() => {
         const geo = await Geocoder.from('Manaus, Rua Misericórdia N 673');
         if(geo.results.length > 0) {
@@ -44,6 +46,7 @@ const Home = () => {
         }
     }
 
+    //lê a distancia e calcula o preço baseado em km
     const handleDirectionsReady = async (r) => {
         setRequestDistance(r.distance);
         setRequestTime(r.duration);
@@ -53,16 +56,18 @@ const Home = () => {
             setRequestPrice(priceReq.price);
         }
 
+        setMinZoom(0);
         map.current.fitToCoordinates(r.coordinates, {
             edgePadding:{
                 left:50,
                 right:50,
                 bottom:50,
-                top:400
+                top:1000
             }
         });
     }
 
+    //pega localização atual e coloca no ponto de partida
     useEffect(()=> {
         //inicia o geocoder
         Geocoder.init(MapsAPI, {language:'pt-br'});
@@ -96,9 +101,11 @@ const Home = () => {
             
         }
         getMyCurrentPosition();
+        setMinZoom(16)
         
     }, [])
 
+    //ativa o componente MapView se existir ponto de partida e de destino
     useEffect(()=> {
         if(fromLoc.center && toLoc.center) {
             setShowDirections(true);
@@ -113,16 +120,16 @@ const Home = () => {
                 ref={map}
                 style={{flex:1}}
                 provider="google"
-                minZoomLevel={16}
+                minZoomLevel={minZoom}
                 camera={mapLoc}
             >
 
                 {fromLoc.center &&
-                    <MapView.Marker pinColor="black" coordinate={fromLoc.center} />
+                    <MapView.Marker pinColor="red" coordinate={fromLoc.center} />
                 }
 
                 {toLoc.center &&
-                    <MapView.Marker pinColor="black" coordinate={toLoc.center} />
+                    <MapView.Marker pinColor="red" coordinate={toLoc.center} />
                 }
 
                 {showDirections &&
@@ -170,7 +177,8 @@ const Home = () => {
 
                     </>
                 </S.IntineraryItem>
-                <S.IntineraryItem>
+                {fromLoc.center && toLoc.center &&
+                    <S.IntineraryItem>
                     <>
                         <S.RequestDetails>
                             <S.RequestDetail>
@@ -185,9 +193,18 @@ const Home = () => {
                                 <S.RequestTitle>Preço</S.RequestTitle>
                                 <S.RequestValue>{requestPrice > 0 ? `R$ ${requestPrice.toFixed(2)}`:'--'}</S.RequestValue>
                             </S.RequestDetail>
-                        </S.RequestDetails>
-                    </>
-                </S.IntineraryItem>
+                            </S.RequestDetails>
+                            <S.RequestButtons>
+                                <S.RequestButton color="#00FF00">
+                                    <S.RequestButtonText>Solicitar Motorista</S.RequestButtonText>
+                                </S.RequestButton>
+                                <S.RequestButton color="#FF0000">
+                                    <S.RequestButtonText>cancelar</S.RequestButtonText>
+                                </S.RequestButton>
+                            </S.RequestButtons>
+                        </>
+                    </S.IntineraryItem>
+                }
             </S.IntineraryArea>
         </S.Container>
     )
