@@ -6,7 +6,9 @@ import Geocoder from 'react-native-geocoding';
 import MapViewDirections from 'react-native-maps-directions';
 import { MapsAPI } from '../../config';
 import useDevsUberApi from '../../hooks/useDevsUberApi';
+import AddressModal from '../../components/AddressModal';
 import * as S from './styled';
+
 
 const Home = () => {
     const map = useRef();
@@ -20,10 +22,15 @@ const Home = () => {
     const [requestDistance, setRequestDistance] = useState(0);
     const [requestTime, setRequestTime] = useState(0);
     const [requestPrice, setRequestPrice] = useState(0);
+
+    const [modalTitle, setModalTitle] = useState('');
+    const [modalVisible, setModalVisible] = useState(false);
+
     
-
+    //abre o modal de endereço do destino
     const handleFromClick = () => {
-
+        setModalTitle('Escolha uma origem');
+        setModalVisible(true);
     }
 
     //pega o ponto de destino
@@ -65,6 +72,28 @@ const Home = () => {
                 top:1000
             }
         });
+    }
+
+    const handleRequestGo = () => {
+
+    }
+
+    //seta o mapa para posição inicial cancelando todos os estados
+    const handleRequestCancel = () => {
+        setToLoc({});
+        setShowDirections(false);
+        setRequestDistance(0);
+        setRequestTime(0);
+        setRequestPrice(0);
+
+        setMapLoc(fromLoc);
+    }
+
+    //seta a posição com o que vem do método camera 
+    const handleMapChange = async () => {
+        const cam = await map.current.getCamera();
+        cam.altitude = 0
+        setMapLoc(cam)
     }
 
     //pega localização atual e coloca no ponto de partida
@@ -116,12 +145,18 @@ const Home = () => {
     return (
         <S.Container>
             <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+            <AddressModal 
+                modalTitle={modalTitle}
+                visible={modalVisible}
+                visibleAction={setModalVisible}
+            />
             <MapView
                 ref={map}
                 style={{flex:1}}
                 provider="google"
                 minZoomLevel={minZoom}
                 camera={mapLoc}
+                onRegionChangeComplete={handleMapChange}
             >
 
                 {fromLoc.center &&
@@ -195,10 +230,10 @@ const Home = () => {
                             </S.RequestDetail>
                             </S.RequestDetails>
                             <S.RequestButtons>
-                                <S.RequestButton color="#00FF00">
+                                <S.RequestButton color="#00FF00" onPress={handleRequestGo}>
                                     <S.RequestButtonText>Solicitar Motorista</S.RequestButtonText>
                                 </S.RequestButton>
-                                <S.RequestButton color="#FF0000">
+                                <S.RequestButton color="#FF0000" onPress={handleRequestCancel}>
                                     <S.RequestButtonText>cancelar</S.RequestButtonText>
                                 </S.RequestButton>
                             </S.RequestButtons>
