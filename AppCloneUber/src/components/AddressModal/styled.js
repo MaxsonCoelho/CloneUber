@@ -24,9 +24,21 @@ export const ModalCloseText = styled.Text`
 
 `;
 
-export const ModalTitle = styled.Text`
+export const ModalInput = styled.TextInput`
 margin-left: 20px;
 font-size: 18px;
-color: #999;
-font-weight: bold;
+color: #000;
+`;
+
+export const ModalResults = styled.View`
+
+`;
+
+export const ModalResult = styled.TouchableHighlight`
+padding: 15px;
+`;
+
+export const ModalResultText = styled.Text`
+color: #000;
+font-size: 16px;
 `;

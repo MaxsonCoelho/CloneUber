@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { StatusBar, Platform, ScrollView, Text, ActivityIndicator } from 'react-native';
-import useDevsUberApi from '../../hooks/useDevsUberApi';
+import useDriverUberApi from '../../hooks/useDriverUberApi';
 import * as S from './styled';
 
 const Login = (props) => {
     const navigation = useNavigation();
-    const api = useDevsUberApi();
+    const api = useDriverUberApi();
 
     const [activeMenu, setActiveMenu] = useState('Login');
     const [name, setName] = useState('');
@@ -54,7 +54,7 @@ const Login = (props) => {
         <S.Container behavior={Platform.OS == 'ios'?'padding':null}>
             <StatusBar barStyle="light-content" backgroundColor="#000" />
             <S.Header>
-                <S.HeaderTitle>Uber</S.HeaderTitle>
+                <S.HeaderTitle>DriverUber</S.HeaderTitle>
             </S.Header>
             <S.Menu>
                 <S.MenuItem active={activeMenu == 'Login'} onPress={() => setActiveMenu('Login')} underlayColor="transparent">
@@ -83,7 +83,6 @@ const Login = (props) => {
                     <S.ActionButtonText>Cadastrar</S.ActionButtonText>
                 </S.ActionButton>
             }
-            <Text>token:{props.token}</Text>
 
            </ScrollView>
             {loading &&

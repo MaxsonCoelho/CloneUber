@@ -5,14 +5,14 @@ import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
 import MapViewDirections from 'react-native-maps-directions';
 import { MapsAPI } from '../../config';
-import useDevsUberApi from '../../hooks/useDevsUberApi';
+import useDriverUberApi from '../../hooks/useDriverUberApi';
 import AddressModal from '../../components/AddressModal';
 import * as S from './styled';
 
 
 const Home = () => {
     const map = useRef();
-    const api = useDevsUberApi();
+    const api = useDriverUberApi();
 
     const [fromLoc, setFromLoc] = useState({});
     const [toLoc, setToLoc] = useState({});
@@ -27,7 +27,7 @@ const Home = () => {
     const [modalVisible, setModalVisible] = useState(false);
 
     
-    //abre o modal de endereço do destino
+    //abre o modal de endereço da origem
     const handleFromClick = () => {
         setModalTitle('Escolha uma origem');
         setModalVisible(true);
