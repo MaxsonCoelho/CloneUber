@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { StatusBar  } from 'react-native';
+import { ActivityIndicator, StatusBar  } from 'react-native';
 import MapView from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
@@ -7,6 +7,7 @@ import MapViewDirections from 'react-native-maps-directions';
 import { MapsAPI } from '../../config';
 import useDriverUberApi from '../../hooks/useDriverUberApi';
 import AddressModal from '../../components/AddressModal';
+import DriverModal from '../../components/DriverModal';
 import * as S from './styled';
 
 
@@ -25,32 +26,42 @@ const Home = () => {
 
     const [modalTitle, setModalTitle] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
+    const [modalField, setModalField] = useState('');
+    const [driverInfo, setDriverInfo] = useState({});
+    const [driverModalVisible, setDriverModalVisible] = useState(false);
+
+    const [loading, setLoading] = useState(false);
 
     
     //abre o modal de endereço da origem
     const handleFromClick = () => {
         setModalTitle('Escolha uma origem');
+        setModalField('from');
         setModalVisible(true);
     }
 
     //pega o ponto de destino
     const handleToClick = async() => {
-        const geo = await Geocoder.from('Manaus, Rua Misericórdia N 673');
-        if(geo.results.length > 0) {
-            const loc = {
-                name:geo.results[0].formatted_address,
-                center:{
-                    latitude:geo.results[0].geometry.location.lat,
-                    longitude:geo.results[0].geometry.location.lng,
-                },
-                zoom:16,
-                pitch:0,
-                altitude:0,
-                heading:0
-            };
+        setModalTitle('Escolha uma destino');
+        setModalField('to');
+        setModalVisible(true);
+
+        // const geo = await Geocoder.from('Manaus, Rua Misericórdia N 673');
+        // if(geo.results.length > 0) {
+        //     const loc = {
+        //         name:geo.results[0].formatted_address,
+        //         center:{
+        //             latitude:geo.results[0].geometry.location.lat,
+        //             longitude:geo.results[0].geometry.location.lng,
+        //         },
+        //         zoom:16,
+        //         pitch:0,
+        //         altitude:0,
+        //         heading:0
+        //     };
             
-            setToLoc(loc);
-        }
+        //     setToLoc(loc);
+        // }
     }
 
     //lê a distancia e calcula o preço baseado em km
@@ -69,13 +80,30 @@ const Home = () => {
                 left:50,
                 right:50,
                 bottom:50,
-                top:1000
+                top:1300
             }
         });
     }
 
-    const handleRequestGo = () => {
+    //encontra o motorista e recebe via api seus dados
+    const handleRequestGo = async () => {
+        setLoading(true);
 
+        const driver = await api.findDriver({
+            fromlat:fromLoc.center.latitude,
+            fromlng:fromLoc.center.longitude,
+            tolat:toLoc.center.latitude,
+            tolng:toLoc.center.longitude
+        });
+        setLoading(false);
+
+        if(!driver.error){
+            setDriverInfo(driver.driver);
+            setDriverModalVisible(true);
+            handleRequestCancel();
+        } else {
+            alert(driver.error);
+        }
     }
 
     //seta o mapa para posição inicial cancelando todos os estados
@@ -94,6 +122,30 @@ const Home = () => {
         const cam = await map.current.getCamera();
         cam.altitude = 0
         setMapLoc(cam)
+    }
+
+    //recebe dados do modal via função prop
+    const handleModalClick = (field, address) => {
+        const loc = {
+                    name:address.address,
+                    center:{
+                        latitude:address.latitude,
+                        longitude:address.longitude,
+                    },
+                    zoom:16,
+                    pitch:0,
+                    altitude:0,
+                    heading:0
+                };
+
+                switch(field) {
+                    case 'to':
+                        setToLoc(loc);
+                        break;
+                    case 'from':
+                        setFromLoc(loc);
+                        break;
+                }
     }
 
     //pega localização atual e coloca no ponto de partida
@@ -134,7 +186,7 @@ const Home = () => {
         
     }, [])
 
-    //ativa o componente MapView se existir ponto de partida e de destino
+    //ativa o componente MapViewDirections se existir ponto de partida e de destino
     useEffect(()=> {
         if(fromLoc.center && toLoc.center) {
             setShowDirections(true);
@@ -142,13 +194,27 @@ const Home = () => {
 
     }, [toLoc]);
 
+    //monitora o local de origem colocando pin onde é setado
+    useEffect(()=> {
+        if(fromLoc.center) {
+            setMapLoc(fromLoc);
+        }
+    }, [fromLoc])
+
     return (
         <S.Container>
             <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+            <DriverModal 
+                driver={driverInfo}
+                visible={driverModalVisible}
+                visibleAction={setDriverModalVisible}
+            />
             <AddressModal 
                 modalTitle={modalTitle}
                 visible={modalVisible}
                 visibleAction={setModalVisible}
+                field={modalField}
+                clickAction={handleModalClick}
             />
             <MapView
                 ref={map}
@@ -241,6 +307,11 @@ const Home = () => {
                     </S.IntineraryItem>
                 }
             </S.IntineraryArea>
+            {loading &&
+                <S.LoadingArea>
+                    <ActivityIndicator size="large" color="#FFF" />
+                </S.LoadingArea>
+            }
         </S.Container>
     )
 }

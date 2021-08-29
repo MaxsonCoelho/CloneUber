@@ -5,10 +5,10 @@ import { Modal } from 'react-native';
 import * as S from './styled';
 
 let timer;
-export default ({ visible, modalTitle, visibleAction }) => {
+export default ({ visible, modalTitle, visibleAction, clickAction, field }) => {
 
     const [results, setResults] = useState([]);
-    const [searchText, setSearchText] =useState('');
+    const [searchText, setSearchText] = useState('');
 
     //fecha o modal de endereço de origem
     const handleCloseAction = () => {
@@ -19,6 +19,13 @@ export default ({ visible, modalTitle, visibleAction }) => {
     const handleClose = () => {
         setResults([]);
         setSearchText('');
+    }
+
+    //executa função enviando field que foi passado por prop do modal e
+    // enviando o item passado pela função do botão, fecha modal
+    const handleResultClick = (item) => {
+        clickAction(field, item);
+        visibleAction(false);
     }
 
     //inicia o geocoder pela chave de api do google
@@ -52,6 +59,7 @@ export default ({ visible, modalTitle, visibleAction }) => {
             }, 700)
         }
     }, [searchText])
+
     return (
         <Modal
             animationType='slide'
@@ -68,7 +76,7 @@ export default ({ visible, modalTitle, visibleAction }) => {
                 </S.ModalHeader>
                 <S.ModalResults>
                     {results.map((i,k)=> (
-                        <S.ModalResult key={k}>
+                        <S.ModalResult key={k} onPress={()=>handleResultClick(i)}>
                             <S.ModalResultText>{i.address}</S.ModalResultText>
                         </S.ModalResult>
                     ))}
