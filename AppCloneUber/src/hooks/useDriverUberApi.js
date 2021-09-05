@@ -64,5 +64,19 @@ export default () => ({
                 resolve(json);
             }, 3000)
         });
+    },
+
+    setRating:(rating)=> {
+        return new Promise((resolve, reject)=> {
+            setTimeout(()=> {
+                let json = {
+                    error:'',
+                };
+
+                resolve(json);
+                
+                resolve(json);
+            }, 1000)
+        });
     }
 })

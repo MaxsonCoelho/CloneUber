@@ -45,23 +45,6 @@ const Home = () => {
         setModalTitle('Escolha uma destino');
         setModalField('to');
         setModalVisible(true);
-
-        // const geo = await Geocoder.from('Manaus, Rua Misericórdia N 673');
-        // if(geo.results.length > 0) {
-        //     const loc = {
-        //         name:geo.results[0].formatted_address,
-        //         center:{
-        //             latitude:geo.results[0].geometry.location.lat,
-        //             longitude:geo.results[0].geometry.location.lng,
-        //         },
-        //         zoom:16,
-        //         pitch:0,
-        //         altitude:0,
-        //         heading:0
-        //     };
-            
-        //     setToLoc(loc);
-        // }
     }
 
     //lê a distancia e calcula o preço baseado em km

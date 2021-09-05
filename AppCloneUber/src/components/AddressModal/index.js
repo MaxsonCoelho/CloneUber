@@ -82,7 +82,6 @@ export default ({ visible, modalTitle, visibleAction, clickAction, field }) => {
                     ))}
                 </S.ModalResults>
             </S.ModalArea>
-            
         </Modal>
     )
 }

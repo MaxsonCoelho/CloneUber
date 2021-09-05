@@ -74,6 +74,12 @@ color: #000;
 margin-bottom: 20px;
 `;
 
+export const RatingTitle = styled.Text`
+margin: 20px;
+font-size: 15px;
+color: #000;
+`;
+
 
 
 
