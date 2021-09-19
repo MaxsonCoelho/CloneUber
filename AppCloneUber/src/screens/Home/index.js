@@ -11,7 +11,7 @@ import DriverModal from '../../components/DriverModal';
 import * as S from './styled';
 
 
-const Home = () => {
+const Home = (props) => {
     const map = useRef();
     const api = useDriverUberApi();
 
@@ -131,6 +131,10 @@ const Home = () => {
                 }
     }
 
+    const handleMenu = () => {
+        props.navigation.openDrawer();
+    }
+
     //pega localização atual e coloca no ponto de partida
     useEffect(()=> {
         //inicia o geocoder
@@ -228,6 +232,9 @@ const Home = () => {
                 }
 
             </MapView>
+            <S.MenuArea onPress={handleMenu} underlayColor="transparent" >
+                <S.MenuImage source={require('../../assets/menu.png')} />
+            </S.MenuArea>
             <S.IntineraryArea>
                 <S.IntineraryItem onPress={handleFromClick} underlayColor="#EEE">
                     <>
